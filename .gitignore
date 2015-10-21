@@ -1,0 +1,8 @@
+tags
+cscope.*
+*~
+*.bak
+*.swp
+*.orig
+*.pyc
+Project/Project_template/EWSTM8/Debug/*
