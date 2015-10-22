@@ -94,20 +94,6 @@ void button1_release(void);
 void button2_push(void);
 void button2_release(void);
 
-void delay_ms(u16 nCount)   // ms
-{
-	u16 tick;
-	while (nCount != 0)
-	{
-		nCount--;
-		tick = 2666;
-		while (tick != 0)
-		{
-			tick --;
-		}
-	}
-}
-
 void send_8670_cmd(cmd_to_8670_t cmd)
 {
 	u8 headset1_pulse_num = 0;
