@@ -607,7 +607,7 @@
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\config\lnkstm8s208mb.icf</state>
+          <state>$TOOLKIT_DIR$\config\lnkstm8l152c6.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1591,9 +1591,36 @@
     <name>STM8L15x_StdPeriph_Driver</name>
     <group>
       <name>inc</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_clk.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_exti.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_gpio.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_tim4.h</name>
+      </file>
     </group>
     <group>
       <name>src</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_exti.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_gpio.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_tim4.c</name>
+      </file>
     </group>
   </group>
   <group>
@@ -1601,16 +1628,28 @@
     <group>
       <name>inc</name>
       <file>
+        <name>$PROJ_DIR$\..\inc\button.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\inc\stm8l15x_it.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\inc\timer.h</name>
       </file>
     </group>
     <group>
       <name>src</name>
       <file>
+        <name>$PROJ_DIR$\..\src\button.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\src\main.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\src\stm8l15x_it.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\src\timer.c</name>
       </file>
     </group>
   </group>

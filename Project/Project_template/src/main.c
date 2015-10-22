@@ -20,6 +20,10 @@
 	
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x.h"
+#include "stm8l15x_clk.h"
+
+#include "timer.h"
+#include "button.h"
 
 /** @addtogroup Template
   * @{
@@ -32,6 +36,14 @@
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
+static void clock_init(void)
+{
+  CLK_DeInit();
+  CLK_HSICmd(ENABLE);
+  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_4);
+  CLK_PeripheralClockConfig(CLK_Peripheral_TIM4, ENABLE);
+}
+
 
 /**
   * @brief  Main program.
@@ -40,6 +52,10 @@
   */
 void main(void)
 {
+  clock_init();
+  timer_init();
+  button_init();
+ 
   /* Infinite loop */
   while (1)
   {

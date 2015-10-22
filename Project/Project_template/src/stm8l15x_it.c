@@ -21,6 +21,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x_it.h"
+#include "stm8l15x_exti.h"
+
+#include "button.h"
+#include "timer.h"
+
+u32 int_timer4 = 0;
 
 /** @addtogroup STM8L15x_StdPeriph_Examples
   * @{
@@ -129,6 +135,7 @@ INTERRUPT_HANDLER(EXTIB_IRQHandler, 6)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  button_event_handler();
 }
 
 /**
@@ -225,6 +232,8 @@ INTERRUPT_HANDLER(EXTI6_IRQHandler, 14)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  button_event_handler();
+  EXTI_ClearITPendingBit(EXTI_IT_Pin6);
 }
 
 /**
@@ -237,6 +246,8 @@ INTERRUPT_HANDLER(EXTI7_IRQHandler, 15)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  button_event_handler();
+  EXTI_ClearITPendingBit(EXTI_IT_Pin7);
 }
 /**
   * @brief  LCD start of new frame Interrupt routine.
@@ -353,6 +364,13 @@ INTERRUPT_HANDLER(TIM4_UPD_OVF_TRG_IRQHandler, 25)
   /* In order to detect unexpected events during development,
      it is recommended to set a breakpoint on the following instruction.
   */
+  int_timer4 ++;
+  if ((int_timer4%5) == 0)
+  {
+    int_timer4 = 0;
+    tick_timeout_handler();
+  }
+  TIM4_ClearITPendingBit(TIM4_IT_Update);
 }
 /**
   * @brief  SPI1 Interrupt routine.
