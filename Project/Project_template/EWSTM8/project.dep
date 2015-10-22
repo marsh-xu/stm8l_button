@@ -212,7 +212,7 @@
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 7 2 3 17 19 27 15 23</file>
+          <file> 2 27 19 17 3 7 15 23</file>
         </tool>
       </inputs>
     </file>

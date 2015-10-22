@@ -7,6 +7,7 @@
 
 #define LEDS_PORT    (GPIOB)
 #define LED_PIN1     (GPIO_Pin_0)
+#define LED_PIN2     (GPIO_Pin_1)
 
 #define BUTTON_PORT  (GPIOB)
 #define BUTTON_PIN1  (GPIO_Pin_6)
@@ -17,6 +18,16 @@
 #define BUTTON_WAIT_3S             300  // The unit is 10 ms, so the duration is 3 s.
 #define BUTTON_DOUBLE_BTN_DURATION 50   // The unit is 10 ms, so the duration is 500 ms.
 #define BUTTON_DOUBLE_BTN_TRACK_DURATION 300 // The unit is 10 ms, so the duration is 3 s.
+
+#define CMD_TO_8670_PAIRING        1
+#define CMD_TO_8670_POWER_OFF      2
+#define CMD_TO_8670_INQUIRY        3
+#define CMD_TO_8670_DISCOVERY      4
+
+#define CMD_PULSE_DURATION               120
+#define CMD_PULSE_ON_DURATION            (CMD_PULSE_DURATION / 2)
+#define CMD_PULSE_HALF_OFF_DURATION      (CMD_PULSE_DURATION / 4)
+
 
 typedef enum button_timer_status_e
 {
@@ -44,6 +55,15 @@ typedef enum button_event_e
 	BUTTON2_VERY_LONG_PRESS,
 	DOUBLE_BTN_TRACK
 } button_event_t;
+
+typedef enum cmd_to_8670_e
+{
+	HEADSET1_PAIRING = 0,
+	HEADSET1_POWEROFF,
+	HEADSET2_PAIRING,
+	HEADSET2_POWEROFF,
+	HEADSET_COMBINATION
+} cmd_to_8670_t;
 
 static button_timer_status_t  m_button1_timer_status = BUTTON_STATUS_INIT;
 static button_timer_status_t  m_button2_timer_status = BUTTON_STATUS_INIT;
@@ -77,7 +97,6 @@ void button2_release(void);
 void delay_ms(u16 nCount)   // ms
 {
 	u16 tick;
-	/* Decrement nCount value */
 	while (nCount != 0)
 	{
 		nCount--;
@@ -86,6 +105,78 @@ void delay_ms(u16 nCount)   // ms
 		{
 			tick --;
 		}
+	}
+}
+
+void send_8670_cmd(cmd_to_8670_t cmd)
+{
+	u8 headset1_pulse_num = 0;
+	u8 headset2_pulse_num = 0;
+	switch (cmd)
+	{
+		case HEADSET1_PAIRING:
+		{
+			headset1_pulse_num = CMD_TO_8670_PAIRING;
+			break;
+		}
+		case HEADSET1_POWEROFF:
+		{
+			headset1_pulse_num = CMD_TO_8670_POWER_OFF;
+			break;
+		}
+		case HEADSET2_PAIRING:
+		{
+			headset2_pulse_num = CMD_TO_8670_PAIRING;
+			break;
+		}
+		case HEADSET2_POWEROFF:
+		{
+			headset2_pulse_num = CMD_TO_8670_PAIRING;
+			break;
+		}
+		case HEADSET_COMBINATION:
+		{
+			headset1_pulse_num = CMD_TO_8670_INQUIRY;
+			headset2_pulse_num = CMD_TO_8670_DISCOVERY;
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
+
+	while ((headset1_pulse_num > 0) && (headset2_pulse_num > 0))
+	{
+		headset1_pulse_num --;
+		headset2_pulse_num --;
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN2, SET);
+		delay_ms(CMD_PULSE_ON_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN2, RESET);
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
+	}
+
+	while (headset1_pulse_num > 0)
+	{
+		headset1_pulse_num --;
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
+		delay_ms(CMD_PULSE_ON_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
+	}
+
+	while (headset2_pulse_num > 0)
+	{
+		headset2_pulse_num --;
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN2, SET);
+		delay_ms(CMD_PULSE_ON_DURATION);
+		GPIO_WriteBit(LEDS_PORT, LED_PIN2, RESET);
+		delay_ms(CMD_PULSE_HALF_OFF_DURATION);
 	}
 }
 
@@ -235,7 +326,7 @@ void btn_debonce_timeout_handler(void)
 void button_init()
 {
   disableInterrupts();
-  GPIO_Init(LEDS_PORT, (LED_PIN1), GPIO_Mode_Out_PP_Low_Fast);
+  GPIO_Init(LEDS_PORT, (LED_PIN1 | LED_PIN2), GPIO_Mode_Out_PP_Low_Fast);
   GPIO_Init(BUTTON_PORT, (BUTTON_PIN1 | BUTTON_PIN2), GPIO_Mode_In_PU_IT);
   EXTI_DeInit();
   EXTI_SelectPort(EXTI_Port_B);
@@ -253,38 +344,24 @@ void button_init()
 
 void btn_short_button1_press(void)
 {
-        GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_double_button1_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_hold_button1_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_button1_press(void)
 {
+	send_8670_cmd(HEADSET1_PAIRING);
 }
 
 void btn_very_long_hold_button1_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+	send_8670_cmd(HEADSET1_POWEROFF);
 }
 
 void btn_very_long_button1_press(void)
@@ -293,38 +370,24 @@ void btn_very_long_button1_press(void)
 
 void btn_short_button2_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_double_button2_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_hold_button2_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(1000);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_button2_press(void)
 {
+	send_8670_cmd(HEADSET2_PAIRING);
 }
 
 void btn_very_long_hold_button2_press(void)
 {
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		delay_ms(500);
-		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+	send_8670_cmd(HEADSET2_POWEROFF);
 }
 
 void btn_very_long_button2_press(void)
@@ -333,13 +396,7 @@ void btn_very_long_button2_press(void)
 
 void btn_double_long_hold_press(void)
 {
-	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-	delay_ms(500);
-	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-	delay_ms(500);
-	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-	delay_ms(500);
-	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+	send_8670_cmd(HEADSET_COMBINATION);
 }
 
 void app_button_event_handler(button_event_t button_event)
