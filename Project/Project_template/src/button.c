@@ -16,13 +16,15 @@
 #define BUTTON_WAIT_2S             200  // The unit is 10 ms, so the duration is 2 s.
 #define BUTTON_WAIT_3S             300  // The unit is 10 ms, so the duration is 3 s.
 #define BUTTON_DOUBLE_BTN_DURATION 50   // The unit is 10 ms, so the duration is 500 ms.
+#define BUTTON_DOUBLE_BTN_TRACK_DURATION 300 // The unit is 10 ms, so the duration is 3 s.
 
 typedef enum button_timer_status_e
 {
 	BUTTON_STATUS_INIT = 0,
 	BUTTON_STATUS_LESS_2S,
 	BUTTON_STATUS_MORE_2S,
-	BUTTON_STATUS_MORE_5S
+	BUTTON_STATUS_MORE_5S,
+	BUTTON_STATUS_DOUBLE_TRACK
 }button_timer_status_t;
 
 typedef enum button_event_e
@@ -39,7 +41,8 @@ typedef enum button_event_e
 	BUTTON2_LONG_HOLD,
 	BUTTON2_LONG_PRESS,
 	BUTTON2_VERY_LONG_HOLD,
-	BUTTON2_VERY_LONG_PRESS
+	BUTTON2_VERY_LONG_PRESS,
+	DOUBLE_BTN_TRACK
 } button_event_t;
 
 static button_timer_status_t  m_button1_timer_status = BUTTON_STATUS_INIT;
@@ -47,6 +50,10 @@ static button_timer_status_t  m_button2_timer_status = BUTTON_STATUS_INIT;
 
 static bool detect_double_button1_press = FALSE;
 static bool detect_double_button2_press = FALSE;
+
+static bool button1_is_pushed = FALSE;
+static bool button2_is_pushed = FALSE;
+static bool double_button_track = FALSE;
 
 static u8   button_status = 0xFF;
 static u8   button_first_detect_status = 0xFF;
@@ -82,26 +89,35 @@ static void button1_duration_timeout_handler(void)
 	switch (m_button1_timer_status)
 	{
 		case BUTTON_STATUS_INIT:
-			{
-				break;
-			}
+		{
+			break;
+		}
 		case BUTTON_STATUS_LESS_2S:
-			{
-				button_event = BUTTON1_LONG_HOLD;
-				timer_start(m_timer_id_button1_detet, BUTTON_WAIT_3S);
-				m_button1_timer_status = BUTTON_STATUS_MORE_2S;
-				break;
-			}
+		{
+			button_event = BUTTON1_LONG_HOLD;
+			timer_start(m_timer_id_button1_detet, BUTTON_WAIT_3S);
+			m_button1_timer_status = BUTTON_STATUS_MORE_2S;
+			break;
+		}
 		case BUTTON_STATUS_MORE_2S:
-			{
-				button_event = BUTTON1_VERY_LONG_HOLD;
-				m_button1_timer_status = BUTTON_STATUS_MORE_5S;
-				break;
-			}
+		{
+			button_event = BUTTON1_VERY_LONG_HOLD;
+			m_button1_timer_status = BUTTON_STATUS_MORE_5S;
+			break;
+		}
+		case BUTTON_STATUS_MORE_5S:
+		{
+			break;
+		}
+		case BUTTON_STATUS_DOUBLE_TRACK:
+		{
+			button_event = DOUBLE_BTN_TRACK;
+			m_button1_timer_status = BUTTON_STATUS_INIT;
+		}
 		default:
-			{
-				break;
-			}
+		{
+			break;
+		}
 	}
 	if (button_event != BUTTON_INVALID)
 	{
@@ -115,26 +131,34 @@ static void button2_duration_timeout_handler(void)
 	switch (m_button2_timer_status)
 	{
 		case BUTTON_STATUS_INIT:
-			{
-				break;
-			}
+		{
+			break;
+		}
 		case BUTTON_STATUS_LESS_2S:
-			{
-				button_event = BUTTON2_LONG_HOLD;
-				timer_start(m_timer_id_button2_detet, BUTTON_WAIT_3S);
-				m_button2_timer_status = BUTTON_STATUS_MORE_2S;
-				break;
-			}
+		{
+			button_event = BUTTON2_LONG_HOLD;
+			timer_start(m_timer_id_button2_detet, BUTTON_WAIT_3S);
+			m_button2_timer_status = BUTTON_STATUS_MORE_2S;
+			break;
+		}
 		case BUTTON_STATUS_MORE_2S:
-			{
-				button_event = BUTTON2_VERY_LONG_HOLD;
-				m_button2_timer_status = BUTTON_STATUS_MORE_5S;
-				break;
-			}
+		{
+			button_event = BUTTON2_VERY_LONG_HOLD;
+			m_button2_timer_status = BUTTON_STATUS_MORE_5S;
+			break;
+		}
+		case BUTTON_STATUS_MORE_5S:
+		{
+			break;
+		}
+		case BUTTON_STATUS_DOUBLE_TRACK:
+		{
+			break;
+		}
 		default:
-			{
-				break;
-			}
+		{
+			break;
+		}
 	}
 	if (button_event != BUTTON_INVALID)
 	{
@@ -176,6 +200,7 @@ void btn_debonce_timeout_handler(void)
 	button_status = current_button;
 	if ((changed_button & BUTTON_PIN1)!= 0)
 	{
+		timer_stop(m_timer_id_button1_detet);
 		if ((current_button & BUTTON_PIN1) == 0)
 		{
 			button1_push();
@@ -188,6 +213,7 @@ void btn_debonce_timeout_handler(void)
 
 	if ((changed_button & BUTTON_PIN2)!= 0)
 	{
+		timer_stop(m_timer_id_button2_detet);
 		if ((current_button & BUTTON_PIN2) == 0)
 		{
 			button2_push();
@@ -229,11 +255,11 @@ void btn_short_button1_press(void)
 void btn_double_button1_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -269,11 +295,11 @@ void btn_short_button2_press(void)
 void btn_double_button2_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		Delay(20000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -297,6 +323,17 @@ void btn_very_long_hold_button2_press(void)
 
 void btn_very_long_button2_press(void)
 {
+}
+
+void btn_double_long_hold_press(void)
+{
+	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
+	Delay(30000);
+	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
+	Delay(30000);
+	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
+	Delay(30000);
+	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void app_button_event_handler(button_event_t button_event)
@@ -367,6 +404,10 @@ void app_button_event_handler(button_event_t button_event)
 			btn_very_long_button2_press();
 			break;
 		}
+		case DOUBLE_BTN_TRACK:
+		{
+			btn_double_long_hold_press();
+		}
 		default:
 		{
 			break;
@@ -374,10 +415,36 @@ void app_button_event_handler(button_event_t button_event)
 	}
 }
 
+// Only use button1_timer to track double button long hold.
+void check_track_double_button(void)
+{
+	if ((button1_is_pushed == TRUE) && (button2_is_pushed == TRUE))
+	{
+		timer_stop(m_timer_id_button2_detet);  // Disable btn2_timer when tracking double hold.
+		m_button1_timer_status = BUTTON_STATUS_DOUBLE_TRACK;
+		m_button2_timer_status = BUTTON_STATUS_INIT;
+		double_button_track = TRUE;
+		timer_start(m_timer_id_button2_detet,BUTTON_DOUBLE_BTN_TRACK_DURATION);  //3 s
+	}
+	else
+	{
+		if (double_button_track == TRUE)
+		{
+			m_button1_timer_status = BUTTON_STATUS_INIT;
+			m_button2_timer_status = BUTTON_STATUS_INIT;
+			double_button_track = FALSE;
+			timer_stop(m_timer_id_button2_detet);
+		}
+	}
+}
+
 void button1_push(void)
 {
-	timer_stop(m_timer_id_button1_detet);
-	if (m_button1_timer_status != BUTTON_STATUS_LESS_2S)
+	button1_is_pushed = TRUE;
+
+	check_track_double_button();
+
+	if (double_button_track == FALSE)
 	{
 		m_button1_timer_status = BUTTON_STATUS_LESS_2S;
 		timer_start(m_timer_id_button1_detet, BUTTON_WAIT_2S);
@@ -386,8 +453,11 @@ void button1_push(void)
 
 void button1_release(void)
 {
+	button1_is_pushed = FALSE;
 	button_event_t button_event = BUTTON_INVALID;
-	timer_stop(m_timer_id_button1_detet);
+
+	check_track_double_button();
+
 	switch (m_button1_timer_status)
 	{
 		case BUTTON_STATUS_INIT:
@@ -433,8 +503,11 @@ void button1_release(void)
 
 void button2_push(void)
 {
-	timer_stop(m_timer_id_button2_detet);
-	if (m_button2_timer_status != BUTTON_STATUS_LESS_2S)
+	button2_is_pushed = TRUE;
+
+	check_track_double_button();
+
+	if (double_button_track == FALSE)
 	{
 		m_button2_timer_status = BUTTON_STATUS_LESS_2S;
 		timer_start(m_timer_id_button2_detet, BUTTON_WAIT_2S);
@@ -443,8 +516,11 @@ void button2_push(void)
 
 void button2_release(void)
 {
+	button2_is_pushed = FALSE;
 	button_event_t button_event = BUTTON_INVALID;
-	timer_stop(m_timer_id_button2_detet);
+
+	check_track_double_button();
+
 	switch (m_button2_timer_status)
 	{
 		case BUTTON_STATUS_INIT:
