@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1165565278
+Checksum=951589884
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -56,7 +56,8 @@ ShowTimeLog=1
 ShowTimeSum=1
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_gpio.h}.46.1" 0 0 0 0 "" 0 ""
-Count=1
+Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\src\main.c}.65.5" 1 0 0 0 "" 0 ""
+Count=2
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

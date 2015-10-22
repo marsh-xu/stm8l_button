@@ -24,6 +24,9 @@
         <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x.h</name>
       </file>
       <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_adc.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_clk.h</name>
       </file>
       <file>
@@ -38,6 +41,9 @@
     </group>
     <group>
       <name>src</name>
+      <file>
+        <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_adc.c</name>
+      </file>
       <file>
         <name>$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\src\stm8l15x_clk.c</name>
       </file>
@@ -57,7 +63,13 @@
     <group>
       <name>inc</name>
       <file>
+        <name>$PROJ_DIR$\..\inc\battery.h</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\inc\button.h</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\inc\delay.h</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\inc\stm8l15x_it.h</name>
@@ -69,7 +81,13 @@
     <group>
       <name>src</name>
       <file>
+        <name>$PROJ_DIR$\..\src\battery.c</name>
+      </file>
+      <file>
         <name>$PROJ_DIR$\..\src\button.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\..\src\delay.c</name>
       </file>
       <file>
         <name>$PROJ_DIR$\..\src\main.c</name>
