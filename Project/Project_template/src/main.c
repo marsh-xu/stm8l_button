@@ -16,8 +16,8 @@
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
   * <h2><center>&copy; COPYRIGHT 2010 STMicroelectronics</center></h2>
-  */ 
-	
+  */
+
 /* Includes ------------------------------------------------------------------*/
 #include "stm8l15x.h"
 #include "stm8l15x_clk.h"
@@ -40,7 +40,7 @@ static void clock_init(void)
 {
   CLK_DeInit();
   CLK_HSICmd(ENABLE);
-  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_4);
+  CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
   CLK_PeripheralClockConfig(CLK_Peripheral_TIM4, ENABLE);
 }
 
@@ -55,7 +55,7 @@ void main(void)
   clock_init();
   timer_init();
   button_init();
- 
+
   /* Infinite loop */
   while (1)
   {
@@ -78,7 +78,7 @@ void main(void)
   * @retval None
   */
 void assert_failed(uint8_t* file, uint32_t line)
-{ 
+{
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 

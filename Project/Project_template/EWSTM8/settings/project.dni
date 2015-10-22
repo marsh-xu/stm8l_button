@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1760545561
+Checksum=1636706630
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -56,12 +56,7 @@ ShowTimeLog=1
 ShowTimeSum=1
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$\..\..\..\Libraries\STM8L15x_StdPeriph_Driver\inc\stm8l15x_gpio.h}.46.1" 0 0 0 0 "" 0 ""
-Bp1=_ "STD_CODE" "{$PROJ_DIR$\..\src\button.c}.171.17" 1 0 0 0 "" 0 ""
-Bp2=_ "STD_CODE" "{$PROJ_DIR$\..\src\button.c}.469.5" 1 0 0 0 "" 0 ""
-Bp3=_ "STD_CODE" "{$PROJ_DIR$\..\src\button.c}.461.2" 1 0 0 0 "" 0 ""
-Bp4=_ "STD_CODE" "{$PROJ_DIR$\..\src\button.c}.447.2" 1 0 0 0 "" 0 ""
-Bp5=_ "STD_CODE" "{$PROJ_DIR$\..\src\button.c}.445.2" 1 0 0 0 "" 0 ""
-Count=6
+Count=1
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""

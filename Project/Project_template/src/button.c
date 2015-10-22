@@ -74,13 +74,19 @@ void button1_release(void);
 void button2_push(void);
 void button2_release(void);
 
-void Delay(u16 nCount)
+void delay_ms(u16 nCount)   // ms
 {
-  /* Decrement nCount value */
-  while (nCount != 0)
-  {
-    nCount--;
-  }
+	u16 tick;
+	/* Decrement nCount value */
+	while (nCount != 0)
+	{
+		nCount--;
+		tick = 2666;
+		while (tick != 0)
+		{
+			tick --;
+		}
+	}
 }
 
 static void button1_duration_timeout_handler(void)
@@ -248,25 +254,25 @@ void button_init()
 void btn_short_button1_press(void)
 {
         GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_double_button1_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_hold_button1_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -277,7 +283,7 @@ void btn_long_button1_press(void)
 void btn_very_long_hold_button1_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -288,25 +294,25 @@ void btn_very_long_button1_press(void)
 void btn_short_button2_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_double_button2_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(20000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
 void btn_long_hold_button2_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(1000);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -317,7 +323,7 @@ void btn_long_button2_press(void)
 void btn_very_long_hold_button2_press(void)
 {
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-		Delay(10000);
+		delay_ms(500);
 		GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
@@ -328,11 +334,11 @@ void btn_very_long_button2_press(void)
 void btn_double_long_hold_press(void)
 {
 	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-	Delay(30000);
+	delay_ms(500);
 	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
-	Delay(30000);
+	delay_ms(500);
 	GPIO_WriteBit(LEDS_PORT, LED_PIN1, SET);
-	Delay(30000);
+	delay_ms(500);
 	GPIO_WriteBit(LEDS_PORT, LED_PIN1, RESET);
 }
 
